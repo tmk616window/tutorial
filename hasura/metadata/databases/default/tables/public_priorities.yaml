@@ -1,0 +1,11 @@
+table:
+  schema: public
+  name: priorities
+array_relationships:
+  - name: todos
+    using:
+      foreign_key_constraint_on:
+        column: priority_id
+        table:
+          schema: public
+          name: todos

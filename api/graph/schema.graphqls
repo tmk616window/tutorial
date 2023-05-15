@@ -1,0 +1,89 @@
+scalar Time
+
+type Todo {
+  id: Int!
+  title: String!
+  description: String!
+  userID: Int!
+  statusID: Int!
+  status: Status!
+  priorityID: Int!
+  priority: Priority!
+  finishedAt: Time!
+  todoLabels: [TodoLabel!]!
+}
+
+type User {
+  id: Int!
+  name: String!
+  todos: [Todo!]!
+  sortTodos(column: String, value: String): [Todo!]!
+}
+
+type Status {
+  id: Int!
+  name: String!
+  todos: [Todo!]!
+}
+
+type Priority {
+  id: Int!
+  name: String!
+}
+
+type Label {
+  id: Int!
+  name: String!
+}
+
+type TodoLabel {
+  id: Int!
+  todoID: Int!
+  labelID: Int!
+  label: Label!
+}
+
+input NewTodo {
+  title: String!
+  description: String!
+  labelIDs: [Int!]!
+  userID: Int!
+  PriorityID: Int!
+  finishedAt: String!
+}
+
+input SortTodo {
+  column: String!
+  sort: Sort!
+}
+
+enum Sort {
+    asc
+    desc
+}
+
+input SearchTodo {
+  column: String!
+  value: String!
+}
+
+input UpdateTodo {
+  id: Int!
+  title: String!
+  description: String!
+  statusID: Int!
+  priorityID: Int!
+  addLabelIDs: [Int!]!
+  deleteLabelIDs: [Int!]!
+  finishedAt: String!
+}
+
+type Query {
+  gqlgenTodos(sortInput: SortTodo,searchInput: SearchTodo): [Todo!]!
+}
+
+type Mutation {
+  createTodo(input: NewTodo!): Todo!
+  deleteTodo(id: Int!): String!
+  updateTodo(input: UpdateTodo!): Todo!
+}

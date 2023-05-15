@@ -1,0 +1,11 @@
+table:
+  schema: public
+  name: labels
+array_relationships:
+  - name: todo_labels
+    using:
+      foreign_key_constraint_on:
+        column: label_id
+        table:
+          schema: public
+          name: todo_labels

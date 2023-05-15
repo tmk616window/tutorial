@@ -1,0 +1,7 @@
+FROM --platform=linux/amd64 golang:latest
+
+WORKDIR /go/api
+
+ADD . /go/api
+
+CMD ["go","run","server.go"]

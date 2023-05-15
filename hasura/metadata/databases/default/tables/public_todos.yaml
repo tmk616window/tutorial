@@ -1,0 +1,21 @@
+table:
+  schema: public
+  name: todos
+object_relationships:
+  - name: priority
+    using:
+      foreign_key_constraint_on: priority_id
+  - name: status
+    using:
+      foreign_key_constraint_on: status_id
+  - name: user
+    using:
+      foreign_key_constraint_on: user_id
+array_relationships:
+  - name: todo_labels
+    using:
+      foreign_key_constraint_on:
+        column: todo_id
+        table:
+          schema: public
+          name: todo_labels

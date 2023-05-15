@@ -1,0 +1,58 @@
+version: "3"
+
+networks:
+  internal-api:
+    external: true
+
+services:
+  api:
+    container_name: api
+    build:
+      context: ./
+      dockerfile: api/Dockerfile.test
+    tty: true
+    volumes:
+      - ./api:/go/api
+    depends_on:
+      - postgresql
+    environment:
+      DBHOST: $DBHOST
+      DBNAME: $DBNAME
+      DBUSER: $DBUSER
+      DBPASSWORD: $DBPASSWORD
+      DBPORT: $DBPORT
+      PORT: $PORT
+    ports:
+      - 8080:8080
+    networks:
+      - internal-api
+
+  postgresql:
+    platform: linux/amd64
+    image: postgres:13
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - internal-api
+
+  hasura:
+    # image: hasura/graphql-engine:v2.8.0.cli-migrations-v3
+    build: ./hasura
+    depends_on:
+      - "postgresql"
+    restart: on-failure:10
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://user:password@postgresql:5432/db
+      # `make console` により起動する管理画面からのみ操作を行うため、下記は false に
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "true"
+      HASURA_REMOTE_SCHEMA_ENDPOINT: http://api:8080/query
+    ports:
+      - "3000:8080"
+    networks:
+      - internal-api

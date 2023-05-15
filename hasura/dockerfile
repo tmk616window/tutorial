@@ -1,0 +1,14 @@
+FROM --platform=linux/amd64 hasura/graphql-engine:v2.8.0.cli-migrations-v3
+
+COPY ./migrations /hasura_migrations
+COPY ./metadata /hasura_metadata
+COPY ./seeds /hasura_seeds
+
+ENV HASURA_GRAPHQL_DATABASE_URL="postgres://user:password@postgresql:5432/db"
+ENV HASURA_GRAPHQL_MIGRATIONS_DIR=/hasura_migrations
+ENV HASURA_GRAPHQL_METADATA_DIR=/hasura_metadata
+ENV HASURA_GRAPHQL_SEEDS_DIR=/hasura_seeds
+
+
+
+EXPOSE 8080
